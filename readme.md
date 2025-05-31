@@ -2,7 +2,7 @@
 
 ## 🔬 Project Overview
 
-**TomatoNet** is a research project that compares the performance of traditional **Machine Learning (ML)** models and modern **Deep Learning (DL)** architectures in classifying tomato leaf diseases. With a focus on agricultural AI, this work explores how different models behave on real-world data, including the impact of background removal on performance.
+**Tomato-Leaf** is a research project that compares the performance of traditional **Machine Learning (ML)** models and modern **Deep Learning (DL)** architectures in classifying tomato leaf diseases. With a focus on agricultural AI, this work explores how different models behave on real-world data, including the impact of background removal on performance.
 
 ---
 
