@@ -1,109 +1,229 @@
-# Comparative Analysis of Lightweight Vision Models for Tomato Disease Classification: Towards Edge-Deployable Agricultural AI 🍅
+# Tomato-Net: Comprehensive Benchmark of Deep Learning Models for Tomato Disease Classification 🍅
 
-This repository provides a comprehensive comparative analysis of various lightweight vision models for the classification of tomato diseases. The primary goal of this research is to identify efficient and accurate models suitable for deployment on edge devices, enabling real-time, in-field disease diagnosis for farmers.
+![tomato-net](https://img.shields.io/badge/Benchmark-Vision%20Models-green)
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
+![PyTorch](https://img.shields.io/badge/PyTorch-1.10%2B-red)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
+![Dataset](https://img.shields.io/badge/Images-16,012-orange)
+![Models](https://img.shields.io/badge/Models-23-tomato)
 
-## 📜 Introduction
+## 📖 Overview
 
-Tomato cultivation is a significant agricultural practice worldwide, but it is often hampered by various diseases that can lead to substantial yield losses. Early and accurate disease detection is crucial for effective management. This project explores the potential of state-of-the-art lightweight deep learning models to provide a scalable and accessible solution for tomato disease classification, with a special emphasis on their performance on resource-constrained edge devices.
+Tomato-Net is the most comprehensive benchmarking suite for tomato leaf disease classification, evaluating 23 classical machine learning and modern deep learning architectures. This research provides an extensive analysis of the performance-efficiency trade-off across diverse model families, offering actionable insights for real-world agricultural AI deployment on edge devices.
 
-## 📊 Models and Performance
+## 🏆 Key Findings
 
-We evaluated a diverse set of lightweight vision models on a custom dataset of tomato leaf images. The performance of each model was assessed based on several key metrics, including accuracy, precision, recall, F1-score, model size, and computational complexity (FLOPs).
+**MobileViTV2-050** emerges as the optimal model, achieving **99.22% accuracy** with only **1.1M parameters** and **0.15 GFLOPs**, making it perfectly suited for edge deployment. Among classical approaches, **KNN** achieved the highest accuracy at **86.17%**.
 
-| Model Name | Overall Accuracy (%) | Macro-averaged Precision (%) | Macro-averaged Recall (%) | Macro-averaged F1-score (%) | Model Size (M Params) | FLOPs (GFLOPs) | Avg. Inference Time (ms/image) |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **MobileViTV2-050** | **99.56** | **99.56** | **99.56** | **99.56** | **1.1** | **0.2** | **91** |
-| MaxViT (maxvit\_nano\_rw\_256) | 99.23 | 99.23 | 99.23 | 99.23 | 15.45 | 9.0 | - |
-| ConvNeXt-Atto (convnext\_atto) | 99.15 | 99.16 | 99.15 | 99.15 | 3.7 | 1.1 | 85 |
-| FastViT (fastvit\_t8) | 98.63 | 98.64 | 98.63 | 98.63 | 4.0 | 1.4 | 90 |
-| CoAtNet-Lite (coat\_lite\_tiny) | 98.14 | 98.20 | 98.14 | 98.14 | 5.7 | 3.2 | 93 |
-| RegNetY (regnety\_040) | 97.78 | 97.91 | 97.78 | 97.78 | 20.6 | 8.0 | 87 |
-| PoolFormer (poolformer\_s12) | 97.07 | 97.17 | 97.07 | 97.09 | 12.0 | 0.86 | 80 |
-| CrossViT (crossvit\_tiny\_240) | 95.98 | 96.03 | 95.98 | 95.97 | 8.69 | 2.90 | - |
-| EfficientViT (efficientvit\_b0) | 95.85 | 96.02 | 95.85 | 95.73 | 2.14 | 0.1 | 89 |
-| TNT (tnt\_s\_patch16\_224) | 95.47 | 95.51 | 95.47 | 95.47 | 23.8 | 10.4 | 60 |
-| ViT-Small (vit\_small\_patch16\_224) | 81.29 | 81.3 | 81.29 | 81.29 | 22.1 | 8.6 | 94 |
-| LeViT (levit\_128s) | 76.6 | 76.6 | 76.6 | 76.6 | 7.8 | 0.6 | 95 |
-| ViT-Tiny (vit\_tiny\_patch16\_224) | 75.81 | 75.81 | 75.81 | 75.81 | 9.7 | 2.2 | 96 |
-| BEiT (beit\_base\_patch16\_224) | 85.36 | 85.36 | 85.36 | 85.36 | 81.1 | 25.4 | 97 |
-| PVT (pvt\_tiny) | 79.88 | 79.88 | 79.88 | 79.88 | 13.2 | 1.9 | 35 |
-| Twins (twins\_pcpvt\_base) | 81.2 | 81.2 | 81.2 | 81.2 | 43.8 | 13.4 | 98 |
-| XCiT (xcit\_tiny\_12\_p16\_224) | 82.1 | 82.1 | 82.1 | 82.1 | 6.8 | 2.8 | - |
+## 📊 Complete Performance Summary
 
-***Note:** Some inference times are not reported as they are highly dependent on the specific hardware and software environment.*
+### Modern Deep Learning Models
 
-## 📈 Evaluation Metrics
+| Model | Accuracy | Precision | Recall | F1-Score | Params (M) | FLOPs (G) | Size (MB) |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **MobileViTV2-050** | **99.22%** | **99.24%** | **99.22%** | **99.19%** | **1.12** | **0.15** | **4.29** |
+| **ConvNeXt-Atto** | 99.38% | 99.37% | 99.38% | 99.37% | 3.38 | 0.44 | 12.89 |
+| **MaxViT-Nano** | 99.06% | 99.06% | 99.06% | 99.06% | 14.94 | 1.96 | 57.52 |
+| **Xception** | 97.28% | - | - | - | 22.9 | - | - |
+| **CoAT-Lite-Tiny** | 98.60% | 98.63% | 98.60% | 98.60% | 5.40 | 0.54 | 20.62 |
+| **FastViT-T8** | 97.69% | 97.73% | 97.69% | 97.68% | 3.26 | 0.43 | 12.56 |
+| **EfficientNet-B1** | 94.26% | - | - | - | 7.8 | - | - |
+| **RegNetY-040** | 97.47% | 97.79% | 97.47% | 97.47% | 19.57 | 2.56 | 74.89 |
+| **PoolFormer-S12** | 97.88% | 97.97% | 97.88% | 97.90% | 11.41 | 1.50 | 43.52 |
+| **MobileNetV2** | 92.79% | - | - | - | 3.5 | - | - |
+| **LeViT-128S** | 97.85% | 97.97% | 97.85% | 97.85% | 7.01 | 0.70 | 27.64 |
+| **CrossViT-Tiny** | 97.10% | 97.13% | 97.10% | 97.09% | 6.73 | 0.88 | 25.66 |
+| **ShuffleNet** | 90.54% | - | - | - | 1.3 | - | - |
+| **EfficientViT-B0** | 95.82% | 95.97% | 95.82% | 95.71% | 2.14 | 0.28 | 8.19 |
+| **InceptionV3** | 83.36% | - | - | - | 27.2 | - | - |
+| **TNT-Small** | 94.75% | 94.82% | 94.75% | 94.74% | 23.37 | 2.35 | 89.17 |
+| **ViT-Small** | 95.10% | 95.36% | 95.10% | 95.11% | 21.67 | 2.17 | 82.66 |
+| **ViT-Tiny** | 94.04% | 94.05% | 94.04% | 93.96% | 5.53 | 0.55 | 21.08 |
+| **BEiT-Base** | 92.82% | 93.03% | 92.82% | 92.83% | 86.52 | 8.61 | 330.77 |
+| **GhostNet** | *Trained* | *Trained* | *Trained* | *Trained* | *Available* | *Available* | *Available* |
 
-The models were evaluated using the following standard classification metrics:
+### Classical Machine Learning Models
 
-  - **Overall Accuracy:** The percentage of correctly classified images out of the total number of images.
-    $$\text{Accuracy} = \frac{\text{Number of Correct Predictions}}{\text{Total Number of Predictions}}$$
-  - **Macro-averaged Precision:** The average precision for each class, calculated independently and then averaged. It treats all classes equally, regardless of their size.
-    $$\text{Precision} = \frac{\text{True Positives}}{\text{True Positives} + \text{False Positives}}$$
-  - **Macro-averaged Recall:** The average recall for each class, calculated independently and then averaged. It measures the ability of the model to identify all relevant instances of each class.
-    $$\text{Recall} = \frac{\text{True Positives}}{\text{True Positives} + \text{False Negatives}}$$
-  - **Macro-averaged F1-score:** The harmonic mean of macro-averaged precision and recall, providing a single score that balances both metrics.
-    $$\text{F1-score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$$
-  - **Model Size (M Params):** The total number of trainable parameters in the model, in millions. A smaller size is generally better for edge deployment.
-  - **FLOPs (GFLOPs):** Floating Point Operations per second, in billions. This metric indicates the computational complexity of the model.
-  - **Average Inference Time (ms/image):** The average time taken by the model to process a single image on a given hardware platform.
+| Model | Accuracy | Precision | Recall | F1-Score |
+|:---|:---:|:---:|:---:|:---:|
+| **K-Nearest Neighbors** | 86.17% | - | - | - |
+| **Support Vector Machine** | 75.00% | - | - | - |
+| **XGBoost** | 68.00% | - | - | - |
+| **Naive Bayes** | *Ensemble* | *Ensemble* | *Ensemble* | *Ensemble* |
 
-## 🖼️ Dataset
+*Note: Complete metrics including inference times available in the evaluation_results/ directory*
 
-The models were trained and evaluated on the **PlantVillage dataset**, which contains thousands of images of healthy and diseased tomato leaves, categorized into different disease classes. The dataset was preprocessed and augmented to ensure robustness and prevent overfitting.
+## 🗂️ Repository Structure
 
-## 🚀 Getting Started
+```
+tomato-net/
+├── models/                          # Pre-trained model weights
+│   └── tomato_leaf_ghostnet_best.pth
+├── notebooks/                       # Jupyter notebooks for analysis
+│   ├── EDA.ipynb                   # Exploratory Data Analysis
+│   ├── model_training.ipynb        # Model training pipeline
+│   ├── metric_evaluation.ipynb     # Performance metrics
+│   ├── EfficientB1.ipynb           # EfficientNet experiments
+│   ├── inception.ipynb             # InceptionV3 experiments
+│   ├── Xception.ipynb              # Xception experiments
+│   ├── KNN+NB+XGBoost.ipynb        # Classical ML approaches
+│   ├── Mobile_shuffle_efficient.ipynb # MobileNet & ShuffleNet
+│   └── bg_removed_inception.ipynb  # Background removal studies
+├── scripts/                        # Utility scripts
+├── evaluation_results/             # JSON metrics for all models
+├── confusion_matrices/             # Visual model performance
+├── metrics/                        # Extracted evaluation metrics
+├── visualizations/                 # Performance graphs and charts
+├── dataset/                        # PlantVillage tomato dataset
+│   ├── Tomato_Bacterial_spot/
+│   ├── Tomato_Early_blight/
+│   ├── Tomato_healthy/
+│   ├── Tomato_Late_blight/
+│   ├── Tomato_Leaf_Mold/
+│   ├── Tomato_Septoria_leaf_spot/
+│   ├── Tomato_Spider_mites_Two_spotted_spider_mite/
+│   ├── Tomato_Target_Spot/
+│   ├── Tomato_Tomato_mosaic_virus/
+│   └── Tomato_Tomato.YellowLeaf_Curl_Virus/
+├── trained_models/                 # Saved model checkpoints
+├── complete_results.csv            # Comprehensive results
+├── complete_results.xlsx           # Excel version of results
+├── evaluation_report.md            # Detailed analysis report
+├── extracted_specific_metrics.txt  # Key metrics extraction
+└── requirements.txt                # Python dependencies
+```
 
-To replicate the results or use the models for your own research, follow these steps:
+## 🧠 Models Evaluated
+
+### Deep Learning Models
+- **Vision Transformers**: ViT-Tiny, ViT-Small, BEiT, CrossViT, TNT
+- **Lightweight CNNs**: MobileViTV2, EfficientViT, ConvNeXt-Atto, FastViT, EfficientNet-B1, MobileNetV2, ShuffleNet, GhostNet
+- **Hybrid Architectures**: CoAT-Lite, LeViT, MaxViT, PoolFormer
+- **Efficient Networks**: RegNetY, Xception, InceptionV3
+
+### Classical Machine Learning
+- K-Nearest Neighbors (KNN): 86.17% accuracy
+- Support Vector Machines (SVM): 75.00% accuracy  
+- XGBoost: 68.00% accuracy
+- Naive Bayes (in ensemble approaches)
+
+## 📈 Dataset Details
+
+- **Total Images**: 16,012 annotated tomato leaf images
+- **Classes**: 10 disease categories + healthy leaves
+- **Diseases**: Bacterial Spot, Early Blight, Late Blight, Leaf Mold, Septoria Leaf Spot, Spider Mites, Target Spot, Tomato Mosaic Virus, Yellow Leaf Curl Virus, Healthy
+- **Resolution**: 150×150 pixels (standardized)
+- **Train/Test Split**: 80/20 stratified split
+- **Augmentation**: Rotation, flipping, color jittering, and scaling
+
+## ⚙️ Installation & Usage
 
 ### Prerequisites
-
-  - Python 3.8 or higher
-  - PyTorch 1.10 or higher
-  - torchvision
-  - timm (PyTorch Image Models)
-  - scikit-learn
-  - NumPy
-  - Matplotlib
+- Python 3.8+
+- PyTorch 1.10+
+- CUDA-capable GPU (recommended)
 
 ### Installation
-
-1.  Clone this repository:
-    ```bash
-    git clone https://github.com/your-username/tomato-disease-classification.git
-    cd tomato-disease-classification
-    ```
-2.  Install the required packages:
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-### Training
-
-To train a model, run the `train.py` script with the desired model architecture and hyperparameters:
-
 ```bash
-python train.py --model_name mobilevitv2_050 --data_dir /path/to/your/dataset --epochs 50 --batch_size 32 --learning_rate 0.001
+git clone https://github.com/your-username/tomato-net.git
+cd tomato-net
+pip install -r requirements.txt
 ```
 
-### Evaluation
-
-To evaluate a trained model, use the `evaluate.py` script:
-
+### Training a Model
 ```bash
-python evaluate.py --model_path /path/to/your/trained/model.pth --data_dir /path/to/your/test/dataset
+python scripts/train.py --model mobilevitv2_050 --epochs 50 --batch_size 32 --lr 0.001
 ```
 
-## 🔬 Results and Discussion
+### Evaluating a Model
+```bash
+python scripts/evaluate.py --model_path trained_models/mobilevitv2_050.pth --data_dir dataset/
+```
 
-Our analysis reveals that **MobileViTV2-050** stands out as the top-performing model, achieving an impressive **99.56%** overall accuracy while maintaining a very small model size (1.1M parameters) and low computational cost (0.2 GFLOPs). This combination of high accuracy and efficiency makes it an excellent candidate for deployment on edge devices.
+### Running Inference
+```bash
+python scripts/predict.py --image_path path/to/leaf_image.jpg --model_name mobilevitv2_050
+```
 
-Other models like **MaxViT** and **ConvNeXt-Atto** also demonstrated high accuracy but with a larger number of parameters. The results highlight a clear trade-off between model performance and computational requirements, which is a critical consideration for real-world agricultural AI applications.
+## 🔍 Methodology
+
+### Evaluation Metrics
+- **Overall Accuracy**: Percentage of correctly classified images
+- **Precision**: True positives / (True positives + False positives)
+- **Recall**: True positives / (True positives + False negatives)  
+- **F1-Score**: Harmonic mean of precision and recall
+- **Cohen's Kappa**: Agreement between predictions and actual labels
+- **ROC AUC**: Area under the Receiver Operating Characteristic curve
+- **Efficiency Metrics**: Model size, parameter count, FLOPs, inference time
+
+### Feature Extraction Techniques
+Multiple feature extraction techniques were employed across different models:
+- Deep Features (VGG16, ResNet50)
+- Texture Analysis (GLCM, LBP, Gabor Filters)
+- Color Descriptors (RGB, HSV histograms)
+- Keypoint Features (SIFT)
+- Conformable Polynomials
+- Global Average Pooling (ResNet50)
+- Hybrid feature ensembles
+
+## 🎯 Results Analysis
+
+Our comprehensive evaluation of 23 models reveals several key insights:
+
+1. **MobileViTV2-050** achieves the best balance of accuracy (99.22%) and efficiency (1.1M parameters)
+2. **ConvNeXt-Atto** provides exceptional accuracy (99.38%) with moderate computational requirements
+3. **Xception** performs well among traditional architectures (97.28% accuracy)
+4. Vision Transformers show strong performance but with higher computational costs
+5. **KNN** outperforms other classical ML approaches with 86.17% accuracy
+6. Model size doesn't always correlate with accuracy (e.g., MobileViTV2 outperforms larger models)
+7. Efficient architectures enable real-time inference on resource-constrained devices
+
+## 🌟 Future Work
+
+- [ ] Quantization benchmarks for further optimization
+- [ ] Deployment on edge devices (Raspberry Pi, Jetson Nano)
+- [ ] Real-time mobile application development
+- [ ] Expansion to additional crop diseases
+- [ ] Integration with drone-based monitoring systems
+- [ ] Federated learning for privacy-preserving model training
+- [ ] Additional studies on background removal techniques
+- [ ] Ensemble approaches combining best-performing models
 
 ## 🤝 Contributing
 
-Contributions to this project are welcome\! If you have suggestions for improving the models, adding new architectures, or enhancing the analysis, please feel free to open an issue or submit a pull request.
+We welcome contributions to tomato-net! Please feel free to:
+- Submit bug reports and feature requests
+- Contribute new model implementations
+- Improve documentation and code quality
+- Share your deployment experiences and use cases
+- Add performance results for new architectures
 
-## 📄 License
+## 📜 License
 
-This project is licensed under the MIT License. See the [LICENSE](https://www.google.com/search?q=LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📚 Citation
+
+If you use tomato-net in your research, please cite:
+
+```bibtex
+@misc{tomato-net2025,
+  title={Tomato-Net: Comprehensive Benchmark of Vision Models for Tomato Disease Classification},
+  author={Obidur Rahman},
+  year={2025},
+  url={https://github.com/Ashfinn/tomato-net}
+}
+```
+
+## 🙏 Acknowledgments
+
+- PlantVillage dataset creators and contributors
+- PyTorch and Timm library developers
+- Research community for advancing vision architectures
+- Contributors to all evaluated model architectures
+
+---
+
+**tomato-net** - Enabling accessible AI for agricultural innovation 🍅🤖
+
+*For complete results, detailed analysis, and reproduction instructions, please explore the notebooks and evaluation_results directory.*

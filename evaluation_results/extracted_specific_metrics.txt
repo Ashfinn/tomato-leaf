@@ -1,0 +1,224 @@
+Metrics for beit_base_patch16_224_metrics.json:
+model_name: beit_base_patch16_224
+image_size: 224
+accuracy: 0.9281923197002809
+precision: 0.9303006182239425
+recall: 0.9281923197002809
+f1_score: 0.9283408325732991
+cohen_kappa: 0.9183372090522665
+roc_auc: 0.997096448507701
+model_size_mb: 330.77356719970703
+parameter_count: 85769674
+estimated_flops_gflops: 8607.158325248
+inference_time_ms: 7566.041469573975
+throughput_fps: 8.458848693516833
+efficiency_score: 3.708843058267597e-07
+
+Metrics for coat_lite_tiny_metrics.json:
+model_name: coat_lite_tiny
+image_size: 224
+accuracy: 0.9859506712457071
+precision: 0.9862827855118907
+recall: 0.9859506712457071
+f1_score: 0.9859833731122716
+cohen_kappa: 0.9840307483572339
+roc_auc: 0.9997765759915688
+model_size_mb: 20.615272521972656
+parameter_count: 5404170
+estimated_flops_gflops: 542.31926784
+inference_time_ms: 2012.0193163553872
+throughput_fps: 31.808839746096922
+efficiency_score: 2.3770261575629532e-05
+
+Metrics for convnext_atto_metrics.json:
+model_name: convnext_atto
+image_size: 256
+accuracy: 0.993755853886981
+precision: 0.9937497998267386
+recall: 0.993755853886981
+f1_score: 0.9937397519586115
+cohen_kappa: 0.9929016834401239
+roc_auc: 0.9998391102601304
+model_size_mb: 12.885017395019531
+parameter_count: 3377730
+estimated_flops_gflops: 442.72582656
+inference_time_ms: 586.8947505950928
+throughput_fps: 109.04851327279043
+efficiency_score: 0.0001314118307675839
+
+Metrics for crossvit_tiny_240_metrics.json:
+model_name: crossvit_tiny_240
+image_size: 256
+accuracy: 0.9709647205744615
+precision: 0.9713117339503338
+recall: 0.9709647205744615
+f1_score: 0.9709374486352778
+cohen_kappa: 0.967018055980915
+roc_auc: 0.9993867197746729
+model_size_mb: 25.664138793945312
+parameter_count: 6727700
+estimated_flops_gflops: 881.8130944
+inference_time_ms: 1111.8341551886663
+throughput_fps: 57.562541770575386
+efficiency_score: 3.4028025043139403e-05
+
+Metrics for efficientvit_b0_metrics.json:
+model_name: efficientvit_b0
+image_size: 256
+accuracy: 0.9581642210427724
+precision: 0.9596827011995569
+recall: 0.9581642210427724
+f1_score: 0.9571060875850379
+cohen_kappa: 0.9523657582426998
+roc_auc: 0.9991386534471363
+model_size_mb: 8.191032409667969
+parameter_count: 2141818
+estimated_flops_gflops: 280.732368896
+inference_time_ms: 542.1386029985216
+throughput_fps: 118.05099221125658
+efficiency_score: 0.000215769956051872
+
+Metrics for fastvit_t8_metrics.json:
+model_name: fastvit_t8
+image_size: 256
+accuracy: 0.9768966593818296
+precision: 0.9772956518492657
+recall: 0.9768966593818296
+f1_score: 0.9768477190653453
+cohen_kappa: 0.9737401947565477
+roc_auc: 0.9992291146170859
+model_size_mb: 12.559226989746094
+parameter_count: 3264922
+estimated_flops_gflops: 427.939856384
+inference_time_ms: 1682.7062765757244
+throughput_fps: 38.033969974985055
+efficiency_score: 4.6225051114221266e-05
+
+Metrics for levit_128s_metrics.json:
+model_name: levit_128s
+image_size: 224
+accuracy: 0.9784576959100842
+precision: 0.9796820279693534
+recall: 0.9784576959100842
+f1_score: 0.9784941771031069
+cohen_kappa: 0.9755249781282185
+roc_auc: 0.9997760115814265
+model_size_mb: 27.639022827148438
+parameter_count: 7014758
+estimated_flops_gflops: 703.944994816
+inference_time_ms: 344.00833977593317
+throughput_fps: 186.0420013121945
+efficiency_score: 0.00010290829851152263
+
+Metrics for maxvit_nano_rw_256_metrics.json:
+model_name: maxvit_nano_rw_256
+image_size: 256
+accuracy: 0.9906337808304714
+precision: 0.990641975329775
+recall: 0.9906337808304714
+f1_score: 0.9906273540966573
+cohen_kappa: 0.9893533674836619
+roc_auc: 0.9997025734777871
+model_size_mb: 57.521095275878906
+parameter_count: 14943278
+estimated_flops_gflops: 1958.645334016
+inference_time_ms: 5142.034265730116
+throughput_fps: 12.446435922556548
+efficiency_score: 3.349276637306584e-06
+
+Metrics for mobilevitv2_050_metrics.json:
+model_name: mobilevitv2_050
+image_size: 256
+accuracy: 0.9921948173587262
+precision: 0.9923546007661331
+recall: 0.9921948173587262
+f1_score: 0.9921933121426897
+cohen_kappa: 0.9911281571628539
+roc_auc: 0.9999527730092707
+model_size_mb: 4.287677764892578
+parameter_count: 1116163
+estimated_flops_gflops: 146.297716736
+inference_time_ms: 1173.6001703474258
+throughput_fps: 54.533052752585924
+efficiency_score: 0.0001971762720505149
+
+Metrics for poolformer_s12_metrics.json:
+model_name: poolformer_s12
+image_size: 256
+accuracy: 0.9787699032157352
+precision: 0.979743163540734
+recall: 0.9787699032157352
+f1_score: 0.9789883468641508
+cohen_kappa: 0.9758833101398078
+roc_auc: 0.9994895280626857
+model_size_mb: 43.515419006347656
+parameter_count: 11407306
+estimated_flops_gflops: 1495.178412032
+inference_time_ms: 1987.1599674224854
+throughput_fps: 32.20676797500778
+efficiency_score: 1.1318910017127957e-05
+
+Metrics for regnety_040_metrics.json:
+model_name: regnety_040
+image_size: 256
+accuracy: 0.9747112082422729
+precision: 0.9778846974139961
+recall: 0.9747112082422729
+f1_score: 0.9747328554268362
+cohen_kappa: 0.9712769996015538
+roc_auc: 0.999650426153547
+model_size_mb: 74.88616943359375
+parameter_count: 19568546
+estimated_flops_gflops: 2564.888461312
+inference_time_ms: 4167.08517074585
+throughput_fps: 15.358457381504612
+efficiency_score: 3.1235032834439774e-06
+
+Metrics for tnt_s_patch16_224_metrics.json:
+model_name: tnt_s_patch16_224
+image_size: 224
+accuracy: 0.94754917265064
+precision: 0.9481755493235953
+recall: 0.94754917265064
+f1_score: 0.9474262184116049
+cohen_kappa: 0.9403126723096894
+roc_auc: 0.997716336815321
+model_size_mb: 89.16544342041016
+parameter_count: 23374186
+estimated_flops_gflops: 2345.646313472
+inference_time_ms: 5099.308119879828
+throughput_fps: 12.550722273575468
+efficiency_score: 2.0839818323770093e-06
+
+Metrics for vit_small_patch16_224_metrics.json:
+model_name: vit_small_patch16_224
+image_size: 224
+accuracy: 0.9509834530128005
+precision: 0.953628548086768
+recall: 0.9509834530128005
+f1_score: 0.9511132732907879
+cohen_kappa: 0.9443182949365038
+roc_auc: 0.9984640049267016
+model_size_mb: 82.66263580322266
+parameter_count: 21669514
+estimated_flops_gflops: 2174.579068928
+inference_time_ms: 2469.3573315938315
+throughput_fps: 25.917674684486265
+efficiency_score: 4.658861196404784e-06
+
+Metrics for vit_tiny_patch16_224_metrics.json:
+model_name: vit_tiny_patch16_224
+image_size: 224
+accuracy: 0.9403684046206682
+precision: 0.9404571406427401
+recall: 0.9403684046206682
+f1_score: 0.9395617152117564
+cohen_kappa: 0.9321307513628254
+roc_auc: 0.9968747570817413
+model_size_mb: 21.081336975097656
+parameter_count: 5526346
+estimated_flops_gflops: 554.579873792
+inference_time_ms: 751.5578534868029
+throughput_fps: 85.15645163319928
+efficiency_score: 5.935228741960055e-05
+
