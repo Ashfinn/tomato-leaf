@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tomato-Net Dashboard 🍅</title>
+    <meta name="color-scheme" content="light dark">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui'] },
+                    colors: {
+                        tomato: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            300: '#fda4af',
+                            400: '#fb7185',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                            800: '#9f1239',
+                            900: '#881337'
+                        }
+                    },
+                    boxShadow: {
+                        soft: '0 10px 20px rgba(0,0,0,0.06), 0 6px 6px rgba(0,0,0,0.08)',
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        .glass {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.55) 100%);
+            backdrop-filter: blur(8px);
+        }
+
+        .dark .glass {
+            background: linear-gradient(180deg, rgba(17, 24, 39, 0.6) 0%, rgba(17, 24, 39, 0.45) 100%);
+        }
+
+        .chip {
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Ensure canvases fill their containers */
+        #scatterChart,
+        #barChart {
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+    <!-- Top Nav -->
+    <header class="sticky top-0 z-30 glass shadow-soft">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
+                    <div
+                        class="h-9 w-9 rounded-xl bg-gradient-to-br from-tomato-500 to-rose-600 flex items-center justify-center shadow-soft">
+                        <span class="text-white text-lg">🍅</span>
+                    </div>
+                    <div>
+                        <div class="font-extrabold text-lg leading-5">Tomato-Net</div>
+                        <div class="text-xs text-slate-500 dark:text-slate-400 -mt-0.5">Model Benchmark Dashboard</div>
+                    </div>
+                </div>
+
+                <div class="hidden md:flex flex-1 justify-center">
+                    <div class="w-full max-w-lg">
+                        <label class="relative block">
+                            <span class="sr-only">Search models</span>
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">🔎</span>
+                            <input id="searchInput"
+                                class="w-full bg-white/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-xl py-2 pl-9 pr-4 outline-none focus:ring-2 focus:ring-tomato-400 focus:border-transparent"
+                                placeholder="Search models, families..." type="text">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="ml-auto flex items-center gap-2">
+                    <button id="themeToggle"
+                        class="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-sm hover:bg-slate-100 dark:hover:bg-slate-800"
+                        aria-label="Toggle theme">🌙</button>
+                    <a href="https://github.com/Ashfinn/tomato-net" target="_blank"
+                        class="px-3 py-2 rounded-lg bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-sm hover:opacity-90">GitHub</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+        <!-- Overview -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="rounded-xl p-4 bg-white dark:bg-slate-800 shadow-soft">
+                <div class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Best Accuracy</div>
+                <div class="mt-2 flex items-end justify-between gap-3">
+                    <div>
+                        <div id="bestAccuracyVal" class="text-2xl font-extrabold">—</div>
+                        <div id="bestAccuracyModel" class="text-sm text-slate-500 dark:text-slate-400">—</div>
+                    </div>
+                    <span
+                        class="chip bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">Top</span>
+                </div>
+            </div>
+
+            <div class="rounded-xl p-4 bg-white dark:bg-slate-800 shadow-soft">
+                <div class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Best Edge Model</div>
+                <div class="mt-2">
+                    <div id="bestEdgeModel" class="text-lg font-bold">—</div>
+                    <div id="bestEdgeDesc" class="text-sm text-slate-500 dark:text-slate-400">—</div>
+                </div>
+            </div>
+
+            <div class="rounded-xl p-4 bg-white dark:bg-slate-800 shadow-soft">
+                <div class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Dataset</div>
+                <div class="mt-2 text-lg">
+                    <div class="font-bold">16,012 images</div>
+                    <div class="text-sm text-slate-500 dark:text-slate-400">11 classes • 150×150</div>
+                </div>
+            </div>
+
+            <div class="rounded-xl p-4 bg-white dark:bg-slate-800 shadow-soft">
+                <div class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Models Evaluated</div>
+                <div class="mt-2 text-lg">
+                    <div id="modelCount" class="font-bold">—</div>
+                    <div class="text-sm text-slate-500 dark:text-slate-400">Deep + Classical</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filters -->
+        <section class="mt-6">
+            <details class="group rounded-xl bg-white dark:bg-slate-800 shadow-soft">
+                <summary class="flex cursor-pointer list-none items-center justify-between px-4 py-3">
+                    <div class="font-semibold">Filters & controls</div>
+                    <div class="text-slate-500 group-open:hidden">Show ▼</div>
+                    <div class="text-slate-500 hidden group-open:block">Hide ▲</div>
+                </summary>
+                <div class="px-4 pb-4 border-t border-slate-100 dark:border-slate-700">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div>
+                            <label class="text-sm text-slate-500 dark:text-slate-400">Family</label>
+                            <select id="familySelect"
+                                class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/70 py-2 px-3">
+                                <option value="">All families</option>
+                                <option value="CNN">CNN</option>
+                                <option value="Transformer">Transformer</option>
+                                <option value="Hybrid">Hybrid</option>
+                                <option value="Classical">Classical</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-sm text-slate-500 dark:text-slate-400 flex justify-between">
+                                <span>Max Params (M)</span><span id="paramsVal">≤ 100M</span>
+                            </label>
+                            <input id="paramsRange" type="range" min="0.5" max="100" step="0.5" value="100"
+                                class="w-full mt-2">
+                        </div>
+                        <div>
+                            <label class="text-sm text-slate-500 dark:text-slate-400 flex justify-between">
+                                <span>Max FLOPs (G)</span><span id="flopsVal">≤ 10G</span>
+                            </label>
+                            <input id="flopsRange" type="range" min="0.05" max="10" step="0.05" value="10"
+                                class="w-full mt-2">
+                        </div>
+                        <div class="flex items-end gap-2">
+                            <label class="flex items-center gap-2">
+                                <input id="edgeToggle" type="checkbox" class="rounded border-slate-300">
+                                <span class="text-sm">Edge-friendly only (≤5M params & ≤0.5G FLOPs)</span>
+                            </label>
+                        </div>
+                        <div class="md:hidden">
+                            <label class="text-sm text-slate-500 dark:text-slate-400">Search</label>
+                            <input id="searchInputMobile"
+                                class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/70 py-2 px-3"
+                                placeholder="Search models, families..." type="text">
+                        </div>
+                        <div>
+                            <label class="text-sm text-slate-500 dark:text-slate-400">Sort by</label>
+                            <select id="sortSelect"
+                                class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/70 py-2 px-3">
+                                <option value="accuracy">Accuracy (desc)</option>
+                                <option value="f1">F1-Score (desc)</option>
+                                <option value="params">Params (asc)</option>
+                                <option value="flops">FLOPs (asc)</option>
+                                <option value="size">Size (asc)</option>
+                                <option value="name">Name (A→Z)</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end gap-2">
+                            <button id="resetBtn"
+                                class="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-sm hover:bg-slate-100 dark:hover:bg-slate-800">Reset</button>
+                            <button id="exportBtn"
+                                class="px-3 py-2 rounded-lg bg-tomato-600 text-white text-sm hover:bg-tomato-700">Export
+                                CSV</button>
+                            <label
+                                class="px-3 py-2 rounded-lg bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-sm hover:opacity-90 cursor-pointer">
+                                Import JSON
+                                <input id="importInput" type="file" accept=".json" class="hidden">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </section>
+
+        <!-- Charts -->
+        <section class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div class="lg:col-span-2 rounded-xl bg-white dark:bg-slate-800 shadow-soft p-4">
+                <div class="flex items-center justify-between">
+                    <div class="font-semibold">Accuracy vs FLOPs</div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400">Pareto points highlighted</div>
+                </div>
+                <!-- Fixed-height container for scatter chart -->
+                <div class="mt-2 relative h-[380px] md:h-[420px] overflow-hidden">
+                    <canvas id="scatterChart" class="absolute inset-0 w-full h-full"></canvas>
+                </div>
+            </div>
+
+            <div class="rounded-xl bg-white dark:bg-slate-800 shadow-soft p-4">
+                <div class="font-semibold">Top Models (Accuracy)</div>
+                <!-- Fixed-height container for bar chart -->
+                <div class="mt-2 relative h-[300px] md:h-[340px] overflow-hidden">
+                    <canvas id="barChart" class="absolute inset-0 w-full h-full"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Leaderboard -->
+        <section class="mt-6">
+            <div class="rounded-xl bg-white dark:bg-slate-800 shadow-soft">
+                <div
+                    class="px-4 py-3 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <div class="font-semibold">Model Leaderboard</div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400">Click column headers to sort</div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm">
+                        <thead class="bg-slate-50 dark:bg-slate-900/40">
+                            <tr>
+                                <th class="px-4 py-3 text-left">#</th>
+                                <th class="px-4 py-3 text-left cursor-pointer select-none" data-sort="name"
+                                    title="Sort by name">Model</th>
+                                <th class="px-4 py-3 text-left">Family</th>
+                                <th class="px-4 py-3 text-right cursor-pointer select-none" data-sort="accuracy"
+                                    title="Sort by accuracy">Acc (%)</th>
+                                <th class="px-4 py-3 text-right cursor-pointer select-none" data-sort="f1"
+                                    title="Sort by F1">F1 (%)</th>
+                                <th class="px-4 py-3 text-right cursor-pointer select-none" data-sort="params"
+                                    title="Sort by params">Params (M)</th>
+                                <th class="px-4 py-3 text-right cursor-pointer select-none" data-sort="flops"
+                                    title="Sort by FLOPs">FLOPs (G)</th>
+                                <th class="px-4 py-3 text-right cursor-pointer select-none" data-sort="size"
+                                    title="Sort by size">Size (MB)</th>
+                                <th class="px-4 py-3 text-center">Edge</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody" class="divide-y divide-slate-100 dark:divide-slate-700"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-8 pb-8 text-center text-xs text-slate-500 dark:text-slate-400">
+            Tomato-Net • Enabling accessible AI for agricultural innovation 🍅
+        </footer>
+    </main>
+
+    <script>
+        // --- Theme ---
+        const themeToggle = document.getElementById('themeToggle');
+        const root = document.documentElement;
+        const storedTheme = localStorage.getItem('theme');
+        if (storedTheme === 'dark' || (!storedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            root.classList.add('dark');
+            themeToggle.textContent = '☀️';
+        }
+        themeToggle.addEventListener('click', () => {
+            root.classList.toggle('dark');
+            const isDark = root.classList.contains('dark');
+            themeToggle.textContent = isDark ? '☀️' : '🌙';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+
+        // --- Data (sample, merge your JSON via Import) ---
+        const modelsBase = [
+            // Deep / Modern
+            { name: 'ConvNeXt-Atto', family: 'CNN', accuracy: 99.38, precision: 99.37, recall: 99.38, f1: 99.37, paramsM: 3.38, flopsG: 0.44, sizeMB: 12.89 },
+            { name: 'MobileViTV2-050', family: 'Hybrid', accuracy: 99.22, precision: 99.24, recall: 99.22, f1: 99.19, paramsM: 1.12, flopsG: 0.15, sizeMB: 4.29 },
+            { name: 'MaxViT-Nano', family: 'Hybrid', accuracy: 99.06, precision: 99.06, recall: 99.06, f1: 99.06, paramsM: 14.94, flopsG: 1.96, sizeMB: 57.52 },
+            { name: 'CoAT-Lite-Tiny', family: 'Hybrid', accuracy: 98.60, precision: 98.63, recall: 98.60, f1: 98.60, paramsM: 5.40, flopsG: 0.54, sizeMB: 20.62 },
+            { name: 'PoolFormer-S12', family: 'Transformer', accuracy: 97.88, precision: 97.97, recall: 97.88, f1: 97.90, paramsM: 11.41, flopsG: 1.50, sizeMB: 43.52 },
+            { name: 'LeViT-128S', family: 'Hybrid', accuracy: 97.85, precision: 97.97, recall: 97.85, f1: 97.85, paramsM: 7.01, flopsG: 0.70, sizeMB: 27.64 },
+            { name: 'FastViT-T8', family: 'Transformer', accuracy: 97.69, precision: 97.73, recall: 97.69, f1: 97.68, paramsM: 3.26, flopsG: 0.43, sizeMB: 12.56 },
+            { name: 'RegNetY-040', family: 'CNN', accuracy: 97.47, precision: 97.79, recall: 97.47, f1: 97.47, paramsM: 19.57, flopsG: 2.56, sizeMB: 74.89 },
+            { name: 'CrossViT-Tiny', family: 'Transformer', accuracy: 97.10, precision: 97.13, recall: 97.10, f1: 97.09, paramsM: 6.73, flopsG: 0.88, sizeMB: 25.66 },
+            { name: 'Xception', family: 'CNN', accuracy: 97.28, paramsM: 22.90, flopsG: null, sizeMB: null },
+            { name: 'EfficientViT-B0', family: 'Transformer', accuracy: 95.82, precision: 95.97, recall: 95.82, f1: 95.71, paramsM: 2.14, flopsG: 0.28, sizeMB: 8.19 },
+            { name: 'ViT-Small', family: 'Transformer', accuracy: 95.10, precision: 95.36, recall: 95.10, f1: 95.11, paramsM: 21.67, flopsG: 2.17, sizeMB: 82.66 },
+            { name: 'TNT-Small', family: 'Transformer', accuracy: 94.75, precision: 94.82, recall: 94.75, f1: 94.74, paramsM: 23.37, flopsG: 2.35, sizeMB: 89.17 },
+            { name: 'ViT-Tiny', family: 'Transformer', accuracy: 94.04, precision: 94.05, recall: 94.04, f1: 93.96, paramsM: 5.53, flopsG: 0.55, sizeMB: 21.08 },
+            { name: 'EfficientNet-B1', family: 'CNN', accuracy: 94.26, paramsM: 7.80, flopsG: null, sizeMB: null },
+            { name: 'BEiT-Base', family: 'Transformer', accuracy: 92.82, precision: 93.03, recall: 92.82, f1: 92.83, paramsM: 86.52, flopsG: 8.61, sizeMB: 330.77 },
+            { name: 'MobileNetV2', family: 'CNN', accuracy: 92.79, paramsM: 3.50, flopsG: null, sizeMB: null },
+            { name: 'ShuffleNet', family: 'CNN', accuracy: 90.54, paramsM: 1.30, flopsG: null, sizeMB: null },
+            { name: 'InceptionV3', family: 'CNN', accuracy: 83.36, paramsM: 27.20, flopsG: null, sizeMB: null },
+            // Classical
+            { name: 'K-Nearest Neighbors', family: 'Classical', accuracy: 86.17, paramsM: null, flopsG: null, sizeMB: null },
+            { name: 'Support Vector Machine', family: 'Classical', accuracy: 75.00, paramsM: null, flopsG: null, sizeMB: null },
+            { name: 'XGBoost', family: 'Classical', accuracy: 68.00, paramsM: null, flopsG: null, sizeMB: null },
+        ];
+
+        let models = [...modelsBase];
+
+        // --- Elements ---
+        const tableBody = document.getElementById('tableBody');
+        const bestAccuracyVal = document.getElementById('bestAccuracyVal');
+        const bestAccuracyModel = document.getElementById('bestAccuracyModel');
+        const bestEdgeModel = document.getElementById('bestEdgeModel');
+        const bestEdgeDesc = document.getElementById('bestEdgeDesc');
+        const modelCount = document.getElementById('modelCount');
+
+        const familySelect = document.getElementById('familySelect');
+        const paramsRange = document.getElementById('paramsRange');
+        const flopsRange = document.getElementById('flopsRange');
+        const paramsVal = document.getElementById('paramsVal');
+        const flopsVal = document.getElementById('flopsVal');
+        const edgeToggle = document.getElementById('edgeToggle');
+        const sortSelect = document.getElementById('sortSelect');
+        const resetBtn = document.getElementById('resetBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const importInput = document.getElementById('importInput');
+
+        const searchInput = document.getElementById('searchInput');
+        const searchInputMobile = document.getElementById('searchInputMobile');
+
+        // --- Helpers ---
+        const isEdge = (m) => (m.paramsM ?? Infinity) <= 5 && (m.flopsG ?? Infinity) <= 0.5;
+
+        function paretoFront(data, xKey, yKey) {
+            const pts = data.filter(d => d[xKey] != null && d[yKey] != null);
+            // Higher y (accuracy) and lower x (flops) is better
+            return pts.filter(p =>
+                !pts.some(q =>
+                    (q[yKey] >= p[yKey] && (q[xKey] ?? Infinity) <= (p[xKey] ?? Infinity)) &&
+                    (q[yKey] > p[yKey] || (q[xKey] ?? Infinity) < (p[xKey] ?? Infinity))
+                )
+            ).map(p => p.name);
+        }
+
+        function chip(text, tone = 'slate') {
+            const palette = {
+                green: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300',
+                yellow: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',
+                red: 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300',
+                slate: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
+            };
+            return `<span class="chip ${palette[tone] || palette.slate}">${text}</span>`;
+        }
+
+        function toneForAccuracy(a) {
+            if (a == null) return 'slate';
+            if (a >= 98) return 'green';
+            if (a >= 95) return 'yellow';
+            return 'red';
+        }
+
+        // --- Utilities ---
+        function debounce(fn, wait = 120) {
+            let t;
+            return (...args) => {
+                clearTimeout(t);
+                t = setTimeout(() => fn.apply(null, args), wait);
+            };
+        }
+
+        const FILTER_KEY = 'tomato_filters_v1';
+        function persistFilters() {
+            const state = {
+                family: familySelect.value,
+                maxParams: parseFloat(paramsRange.value),
+                maxFlops: parseFloat(flopsRange.value),
+                edgeOnly: edgeToggle.checked,
+                sort: sortSelect.value,
+                query: (searchInput?.value || searchInputMobile?.value || '')
+            };
+            localStorage.setItem(FILTER_KEY, JSON.stringify(state));
+        }
+        function restoreFilters() {
+            try {
+                const raw = localStorage.getItem(FILTER_KEY);
+                if (!raw) return;
+                const f = JSON.parse(raw);
+                if (f.family != null) familySelect.value = f.family;
+                if (f.maxParams != null) paramsRange.value = f.maxParams;
+                if (f.maxFlops != null) flopsRange.value = f.maxFlops;
+                if (f.edgeOnly != null) edgeToggle.checked = f.edgeOnly;
+                if (f.sort != null) sortSelect.value = f.sort;
+                if (searchInput) searchInput.value = f.query || '';
+                if (searchInputMobile) searchInputMobile.value = f.query || '';
+            } catch { /* ignore */ }
+        }
+
+        // Header sort state (clickable th)
+        const headerSortState = { key: null, dir: 'desc' };
+        function setHeaderSort(key) {
+            if (headerSortState.key === key) {
+                headerSortState.dir = headerSortState.dir === 'asc' ? 'desc' : 'asc';
+            } else {
+                headerSortState.key = key;
+                headerSortState.dir = key === 'name' ? 'asc' : 'desc';
+            }
+            update();
+        }
+        function attachHeaderSort() {
+            document.querySelectorAll('thead th[data-sort]').forEach(th => {
+                th.addEventListener('click', () => setHeaderSort(th.dataset.sort));
+            });
+        }
+        function sortData(arr, key, dir = 'desc') {
+            const sign = dir === 'asc' ? 1 : -1;
+            const numVal = (m, k) => {
+                switch (k) {
+                    case 'params': return m.paramsM;
+                    case 'flops': return m.flopsG;
+                    case 'size': return m.sizeMB;
+                    default: return m[k]; // accuracy, f1, name, etc.
+                }
+            };
+            arr.sort((a, b) => {
+                if (key === 'name') return sign * a.name.localeCompare(b.name);
+                const A = numVal(a, key);
+                const B = numVal(b, key);
+                const nA = (typeof A === 'number' && Number.isFinite(A)) ? A : (dir === 'asc' ? Infinity : -Infinity);
+                const nB = (typeof B === 'number' && Number.isFinite(B)) ? B : (dir === 'asc' ? Infinity : -Infinity);
+                return sign * (nA - nB);
+            });
+        }
+
+        // --- Summaries ---
+        function summarize(current = models) {
+            const valid = current.filter(m => !Number.isNaN(m.accuracy));
+            const best = [...valid].sort((a, b) => (b.accuracy ?? -1) - (a.accuracy ?? -1))[0];
+            if (best) {
+                bestAccuracyVal.textContent = `${best.accuracy.toFixed(2)}%`;
+                bestAccuracyModel.textContent = best.name;
+            } else {
+                bestAccuracyVal.textContent = '—';
+                bestAccuracyModel.textContent = '—';
+            }
+            const edgeModels = valid.filter(isEdge).sort((a, b) => {
+                const score = (m) => (m.accuracy ?? 0) / ((m.flopsG ?? 0.5) + (m.paramsM ?? 5) * 0.05);
+                return score(b) - score(a);
+            });
+            if (edgeModels.length) {
+                const e = edgeModels[0];
+                bestEdgeModel.textContent = e.name;
+                bestEdgeDesc.textContent = `${e.accuracy?.toFixed(2) ?? '—'}% • ${e.paramsM?.toFixed(2) ?? '—'}M params • ${e.flopsG?.toFixed(2) ?? '—'}G FLOPs`;
+            } else {
+                bestEdgeModel.textContent = '—';
+                bestEdgeDesc.textContent = '—';
+            }
+            modelCount.textContent = `${current.length} / ${models.length}`;
+        }
+
+        // --- Filtering + Sorting ---
+        function getFilterState() {
+            const query = (searchInput?.value || '') || (searchInputMobile?.value || '');
+            return {
+                family: familySelect.value,
+                maxParams: parseFloat(paramsRange.value),
+                maxFlops: parseFloat(flopsRange.value),
+                edgeOnly: edgeToggle.checked,
+                sort: sortSelect.value,
+                query: query.trim().toLowerCase(),
+            };
+        }
+
+        function applyFilters(data, f) {
+            let r = [...data];
+            if (f.family) r = r.filter(m => m.family === f.family);
+            r = r.filter(m => (m.paramsM == null || m.paramsM <= f.maxParams));
+            r = r.filter(m => (m.flopsG == null || m.flopsG <= f.maxFlops));
+            if (f.edgeOnly) r = r.filter(isEdge);
+            if (f.query) {
+                r = r.filter(m =>
+                    m.name.toLowerCase().includes(f.query) ||
+                    (m.family || '').toLowerCase().includes(f.query)
+                );
+            }
+
+            // Prefer header sort if user clicked a column, else dropdown sort
+            if (headerSortState.key) {
+                sortData(r, headerSortState.key, headerSortState.dir);
+            } else {
+                const key = f.sort; // accuracy, f1, params, flops, size, name
+                const dir = (key === 'params' || key === 'flops' || key === 'size' || key === 'name') ? 'asc' : 'desc';
+                sortData(r, key, dir);
+            }
+            return r;
+        }
+
+        function renderTable(data) {
+            tableBody.innerHTML = '';
+            if (!data.length) {
+                tableBody.innerHTML = `<tr>
+          <td colspan="9" class="px-4 py-6 text-center text-slate-500 dark:text-slate-400">
+            No models match your filters.
+          </td>
+        </tr>`;
+                return;
+            }
+            const paretoNames = paretoFront(data, 'flopsG', 'accuracy');
+            data.forEach((m, i) => {
+                const acc = m.accuracy != null ? m.accuracy.toFixed(2) : '—';
+                const f1 = m.f1 != null ? m.f1.toFixed(2) : '—';
+                const params = m.paramsM != null ? m.paramsM.toFixed(2) : '—';
+                const flops = m.flopsG != null ? m.flopsG.toFixed(2) : '—';
+                const size = m.sizeMB != null ? m.sizeMB.toFixed(2) : '—';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+          <td class="px-4 py-3 text-slate-500">${i + 1}</td>
+          <td class="px-4 py-3 font-medium">
+            <div class="flex items-center gap-2">
+              ${m.name}
+              ${paretoNames.includes(m.name) ? chip('Pareto', 'green') : ''}
+            </div>
+          </td>
+          <td class="px-4 py-3">${m.family || '—'}</td>
+          <td class="px-4 py-3 text-right">${acc}</td>
+          <td class="px-4 py-3 text-right">${f1}</td>
+          <td class="px-4 py-3 text-right">${params}</td>
+          <td class="px-4 py-3 text-right">${flops}</td>
+          <td class="px-4 py-3 text-right">${size}</td>
+          <td class="px-4 py-3 text-center">${isEdge(m) ? chip('Edge', 'green') : ''}</td>
+        `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // --- Charts ---
+        let scatterChart, barChart;
+
+        function getFamilyColor(family) {
+            switch (family) {
+                case 'CNN': return '#f43f5e'; // tomato/rose
+                case 'Transformer': return '#6366f1'; // indigo
+                case 'Hybrid': return '#06b6d4'; // cyan
+                case 'Classical': return '#f59e0b'; // amber
+                default: return '#94a3b8';
+            }
+        }
+
+        function buildScatterData(data) {
+            const groups = {};
+            data.forEach(m => {
+                if (m.flopsG == null || m.accuracy == null) return;
+                const fam = m.family || 'Other';
+                if (!groups[fam]) groups[fam] = [];
+                const radius = Math.max(4, Math.min(10, (m.paramsM || 5) * 1.2)); // scale by params
+                groups[fam].push({
+                    x: m.flopsG,
+                    y: m.accuracy,
+                    r: radius,
+                    label: m.name,
+                    model: m
+                });
+            });
+            const paretoNames = paretoFront(data, 'flopsG', 'accuracy');
+            return Object.keys(groups).map(fam => {
+                const points = groups[fam].map(p => ({ ...p, _pareto: paretoNames.includes(p.label) }));
+                return {
+                    label: fam,
+                    data: points,
+                    pointBackgroundColor: ctx => getFamilyColor(ctx.dataset.label),
+                    pointBorderColor: ctx => (ctx.raw._pareto ? '#22c55e' : 'rgba(0,0,0,0.25)'),
+                    pointBorderWidth: ctx => (ctx.raw._pareto ? 2 : 1),
+                    pointRadius: ctx => ctx.raw.r ?? 5,
+                    pointHoverRadius: ctx => (ctx.raw.r ?? 5) + 2,
+                    showLine: false
+                };
+            });
+        }
+
+        function buildBarData(data) {
+            const top = [...data].filter(m => m.accuracy != null).sort((a, b) => b.accuracy - a.accuracy).slice(0, 7);
+            return {
+                labels: top.map(m => m.name),
+                datasets: [{
+                    label: 'Accuracy (%)',
+                    data: top.map(m => m.accuracy),
+                    backgroundColor: top.map(m => getFamilyColor(m.family)),
+                    borderRadius: 6
+                }]
+            };
+        }
+
+        function renderCharts(filtered) {
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const ctx1 = document.getElementById('scatterChart').getContext('2d');
+            const ctx2 = document.getElementById('barChart').getContext('2d');
+            const datasets = buildScatterData(filtered);
+
+            if (scatterChart) scatterChart.destroy();
+            scatterChart = new Chart(ctx1, {
+                type: 'scatter',
+                data: { datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    resizeDelay: 150,
+                    animation: prefersReducedMotion ? false : { duration: 250 },
+                    scales: {
+                        x: { title: { display: true, text: 'FLOPs (G)' }, grid: { color: 'rgba(148,163,184,0.2)' } },
+                        y: { title: { display: true, text: 'Accuracy (%)' }, min: 60, max: 100, grid: { color: 'rgba(148,163,184,0.2)' } }
+                    },
+                    plugins: {
+                        legend: { display: true, position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => {
+                                    const m = ctx.raw.model;
+                                    return [
+                                        `${m.name}`,
+                                        `Acc: ${m.accuracy?.toFixed(2) ?? '—'}%`,
+                                        `FLOPs: ${m.flopsG?.toFixed(2) ?? '—'} G`,
+                                        `Params: ${m.paramsM?.toFixed(2) ?? '—'} M`
+                                    ];
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const barData = buildBarData(filtered);
+            if (barChart) barChart.destroy();
+            barChart = new Chart(ctx2, {
+                type: 'bar',
+                data: barData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    resizeDelay: 150,
+                    animation: prefersReducedMotion ? false : { duration: 250 },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: ctx => `${ctx.parsed.y.toFixed(2)}%` } }
+                    },
+                    scales: {
+                        y: { min: 60, max: 100, grid: { color: 'rgba(148,163,184,0.2)' } },
+                        x: { ticks: { autoSkip: false, maxRotation: 40, minRotation: 0 }, grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // --- Export / Import ---
+        function exportCSV(rows) {
+            const headers = ['Model', 'Family', 'Accuracy', 'Precision', 'Recall', 'F1', 'Params(M)', 'FLOPs(G)', 'Size(MB)'];
+            const lines = [headers.join(',')];
+            rows.forEach(m => {
+                const row = [
+                    `"${m.name}"`,
+                    m.family || '',
+                    m.accuracy ?? '',
+                    m.precision ?? '',
+                    m.recall ?? '',
+                    m.f1 ?? '',
+                    m.paramsM ?? '',
+                    m.flopsG ?? '',
+                    m.sizeMB ?? ''
+                ];
+                lines.push(row.join(','));
+            });
+            const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'tomato_net_leaderboard.csv'; a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function mergeImported(json) {
+            // Expect array of objects with fields that align with our keys
+            const incoming = Array.isArray(json) ? json : (json.models || []);
+            const byName = new Map(models.map(m => [m.name, m]));
+            incoming.forEach(m => {
+                const name = m.name || m.model || m.Model;
+                if (!name) return;
+                const normalized = {
+                    name,
+                    family: m.family || m.Family || byName.get(name)?.family || 'Unknown',
+                    accuracy: num(m.accuracy ?? m.Accuracy),
+                    precision: num(m.precision ?? m.Precision),
+                    recall: num(m.recall ?? m.Recall),
+                    f1: num(m.f1 ?? m.F1),
+                    paramsM: num(m.paramsM ?? m.ParamsM ?? m.params ?? m.Params),
+                    flopsG: num(m.flopsG ?? m.FLOPsG ?? m.flops ?? m.FLOPs),
+                    sizeMB: num(m.sizeMB ?? m.SizeMB ?? m.size ?? m.Size),
+                };
+                byName.set(name, { ...(byName.get(name) || {}), ...normalized });
+            });
+            models = Array.from(byName.values());
+        }
+
+        function num(v) {
+            if (v == null) return null;
+            const x = parseFloat(v);
+            return Number.isFinite(x) ? x : null;
+        }
+
+        // --- UI Wiring ---
+        function update() {
+            paramsVal.textContent = `≤ ${parseFloat(paramsRange.value)}M`;
+            flopsVal.textContent = `≤ ${parseFloat(flopsRange.value)}G`;
+
+            const filters = getFilterState();
+            const filtered = applyFilters(models, filters);
+
+            summarize(filtered);
+            renderTable(filtered);
+            renderCharts(filtered);
+            persistFilters();
+        }
+
+        const debouncedUpdate = debounce(update, 120);
+
+        [familySelect, paramsRange, flopsRange, edgeToggle].forEach(el => el.addEventListener('input', update));
+        sortSelect.addEventListener('input', () => {
+            headerSortState.key = null; // clear header sort when dropdown sort is used
+            headerSortState.dir = 'desc';
+            update();
+        });
+
+        // Debounce search inputs for smoother typing
+        [searchInput, searchInputMobile].forEach(el => el && el.addEventListener('input', debouncedUpdate));
+
+        resetBtn.addEventListener('click', () => {
+            familySelect.value = '';
+            paramsRange.value = 100;
+            flopsRange.value = 10;
+            edgeToggle.checked = false;
+            sortSelect.value = 'accuracy';
+            if (searchInput) searchInput.value = '';
+            if (searchInputMobile) searchInputMobile.value = '';
+            headerSortState.key = null;
+            headerSortState.dir = 'desc';
+            update();
+        });
+
+        exportBtn.addEventListener('click', () => {
+            const filtered = applyFilters(models, getFilterState());
+            exportCSV(filtered);
+        });
+
+        importInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            try {
+                const text = await file.text();
+                const json = JSON.parse(text);
+                mergeImported(json);
+                update();
+                alert('Imported successfully!');
+            } catch (err) {
+                console.error(err);
+                alert('Failed to import JSON. Please check file format.');
+            } finally {
+                importInput.value = '';
+            }
+        });
+
+        // Restore filters and enable header sorting, then initial render
+        restoreFilters();
+        attachHeaderSort();
+        update();
+    </script>
+</body>
+
+</html>
